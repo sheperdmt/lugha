@@ -1,0 +1,12 @@
+*.pyc
+*~
+__pycache__
+.DS_Store
+__pycache__
+temp
+known_bugs.txt
+config.py
+test.py
+temp_test.py
+env
+cached

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ word }} 在 Wiktionary 中的释义</title>
+</head>
+<body>
+    <h1>你要查询 <i>{{ word }}</i> 在哪个语言中的释义？</h1>
+    <div>
+        {% for l in languages %}
+        <a href="{{ url_for(
+                'word.index', word='{}.{}'.format(word, code_lang_normalizer(l))
+                ) }}" class="language">
+            {{ to_canonical_names(l) }}
+        </a><br>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ word }} 在 Wiktionary 中的释义</title>
+</head>
+<body>
+    <h3>查看 <i>{{ word }}</i> 在其他语言中的释义</h3>
+    <div>
+        {% for l in languages %}
+        <a href="{{ url_for(
+                'word.index', word='{}.{}'.format(entries[0].lemma, code_lang_normalizer(l))
+                ) }}" class="language">
+            {{ to_canonical_names(l) }}
+        </a><br>
+        {% endfor %}
+    </div>
+    <h1>
+        Definition of <b class="language">{{ to_canonical_names(lang) }}</b>
+        word <i class="word-name">{{ word }}</i> in Wiktionary
+    </h1>
+    <div class="float-button" hidden>
+        <button>添加到生词本</button>
+    </div>
+    {% for entry in entries %}
+        <div id="{{ entry.repr }}">
+        <h2 class="homograph">{{ entry.lemma }}</h2>
+        {% if entry.etym != '' %}
+        <h3>Etymology</h3>
+        <p class="etymology">{{ entry.etym }}</p>
+        {% endif %}
+        {% if entry.prnn != '' %}
+        <h3>Pronunciation</h3>
+        <ul class="pronunciation">
+            {% for i in entry.prnn.split('\n') %}
+                <li>
+                    {{ i }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% for word_by_pos in Word_by_PoS.find_by_repr(entry.repr) %}
+            <h3 class="{{ word_by_pos.pos }}">{{ pos_dict[word_by_pos.pos] }}</h3>
+            <p>{{ word_by_pos.text }}</p>
+            <ol class="definitions">
+            {% for sema in Sema.find_by_repr(word_by_pos.repr) %}
+                <li data-sema-id={{ sema.id }} class="sema">{{ sema.content }}</li>
+                <ul class="examples">
+                {% for example in sema.examples %}
+                    <li>{{ example }}</li>
+                {% endfor %}
+                </ul>
+            {% endfor %}
+            </ol>
+        {% endfor %}
+        </div>
+        <hr>
+    {% endfor %}
+    <script src="/static/js/ajax.js"></script>
+    <script src="/static/js/_word.js"></script>
+</body>
+</html>
