@@ -93,19 +93,24 @@ def word_into_model(word_name, language, word_data):
 
 
 def run(word_name, language):
-    print('*** paring word', word_name, language)
     data = get_page(word_name, language)
     word_into_model(word_name, language, data)
 
 
 def new_headword_run(word, possible_language_list):    
     for lang in possible_language_list:
+        lang = code_lang_normalizer(lang)
+        print('****123**', lang)
+
         if lang in the_six_lang_codes:
             data = get_page(word, to_canonical_names(lang))
             word_into_model(word, code_lang_normalizer(lang), data)
+            print('******', lang)
+            return lang
         else:
             headword = Headword.find_or_new(lemma=word)
             headword.add_possible_lang(lang)
+    return None
 
 
 def test(word_name, language):

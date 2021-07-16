@@ -7,7 +7,7 @@ PARTS_OF_SPEECH_ABBR = [
     "let", "char", "phr", "prov", "idiom",
     "sym", "syl", "num", "init", "int",
     "def", "pron", "ptc", "pred", "part",
-    "suf",
+    "suf", "contr",
 ]
 
 RELATIONS_ABBR = [
@@ -22,7 +22,7 @@ PARTS_OF_SPEECH = [
     "letter", "character", "phrase", "proverb", "idiom",
     "symbol", "syllable", "numeral", "initialism", "interjection",
     "definitions", "pronoun", "particle", "predicative", "participle",
-    "suffix",
+    "suffix", "contraction",
 ]
 
 RELATIONS = [
@@ -40,7 +40,6 @@ def generate_languages_data():
         families = []
         scripts = []
         language_list = data.split('\n')
-        print(language_list[:10])
         for i in language_list:
             code, canonical_name, family, script = i.split(',', 3)
             codes.append(code)

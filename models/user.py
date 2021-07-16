@@ -46,5 +46,13 @@ class User(Model):
         for i in data:
             if i not in self.memo:
                 self.memo.append(i)
-                self.save()
+        self.save()
             
+    def remove_memo(self, data):
+        for i in data:
+            if i in self.memo:
+                self.memo.remove(i)
+        self.save()
+
+    def load_memo(self):
+        return self.memo

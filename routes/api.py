@@ -17,4 +17,18 @@ def add():
     data = json.loads(request.data)
     u = current_user()
     u.add_memo(data)
-    return 'success!'
+    return 'adding success!'
+
+@main.route('/memo/load')
+def load():
+    u = current_user()
+    memos = u.load_memo()
+    data = json.dumps(memos)
+    return data
+
+@main.route('/memo/remov', methods=['POST'])
+def remove():
+    data = json.loads(request.data)
+    u = current_user()
+    u.remove_memo(data)
+    return 'removal success!'

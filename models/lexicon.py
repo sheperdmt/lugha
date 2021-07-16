@@ -69,7 +69,6 @@ class Lexis(Model):
         attrs_values = attrs.split('.')
         attrs_values = [attrs_types[i](attrs_values[i]) for i in range(len(attrs_values))]
         attrs_dict = dict(zip(attrs_keys, attrs_values))
-        print(lemma, attrs_dict)
         return cls.find(lemma=lemma, **attrs_dict)
 
 
