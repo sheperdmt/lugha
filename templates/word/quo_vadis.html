@@ -7,11 +7,9 @@
 <body>
     <h1>你要查询 <i>{{ word }}</i> 在哪个语言中的释义？</h1>
     <div>
-        {% for l in languages %}
-        <a href="{{ url_for(
-                'word.index', word='{}.{}'.format(word, code_lang_normalizer(l))
-                ) }}" class="language">
-            {{ to_canonical_names(l) }}
+        {% for _, lang, word_repr in data %}
+        <a href="{{ url_for('word.index', word_repr=word_repr) }}" class="language">
+            {{ lang }}
         </a><br>
         {% endfor %}
     </div>

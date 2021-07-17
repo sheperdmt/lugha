@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 from models.lexicon import Headword
-from linguistics import to_canonical_names
+from linguistics import code2name, name2code
 
 proxies = {
     'http': 'socks5://192.168.31.247:9909',
@@ -20,7 +20,8 @@ def get_possible_language_list(word):
     langs = soup.find_all('li', class_='toclevel-1')
     for l in langs:
         lang = l.a['href'].strip('#').replace('_', ' ')
-        lang_list.append(to_canonical_names(lang))
+        print('*-*-*-*', lang)
+        lang_list.append(name2code(lang))
     return lang_list
 
 

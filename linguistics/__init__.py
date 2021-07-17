@@ -49,7 +49,7 @@ def generate_languages_data():
             # scripts.append(script)
     return codes, canonical_names
 
-def code_lang_normalizer(string):
+def name2code(string):
     codes, canonical_names = generate_languages_data()
     if string[0].isupper():
         d = dict(zip(canonical_names, codes))
@@ -57,10 +57,14 @@ def code_lang_normalizer(string):
     else:
         return string
 
-def to_canonical_names(string):
+def code2name(string):
     codes, canonical_names = generate_languages_data()
     if string[0].islower():
         d = dict(zip(codes, canonical_names))
         return d[string]
     else:
         return string
+        
+abbr2pos = dict(zip(PARTS_OF_SPEECH_ABBR, PARTS_OF_SPEECH))
+pos2abbr = dict(zip(PARTS_OF_SPEECH, PARTS_OF_SPEECH_ABBR))
+

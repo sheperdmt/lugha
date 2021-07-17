@@ -7,7 +7,7 @@ parser = WiktionaryParser()
 
 
 def get_page(word, language):
-    language = to_canonical_names(language)
+    language = code2name(language)
     data = parser.fetch(word, language=language, proxies={
         'http': 'socks5://192.168.31.247:9909',
         'https': 'socks5://192.168.31.247:9909',
@@ -22,28 +22,29 @@ the_six_lang_codes = ['en', 'fr', 'de', 'it', 'es', 'la']
 # the_six_langs = ['English', 'French', 'German', 'Italian', 'Spanish', 'Latin']
 
 
-def word_constructor(lemma, lang, etym_id, w):
+def word_constructor(lemma, lang, etym_no, w):
     word_repr = '<{}>.{}.{}'
-    repr = word_repr.format(lemma, lang, etym_id)
+    repr = word_repr.format(lemma, lang, etym_no)
     form = dict(
         lemma=lemma,
         lang=lang,
-        etym_id=etym_id,
+        etym_no=etym_no,
         repr=repr,
         etym=w['etymology'],
         prnn='\n'.join(w['pronunciations']['text']),
     )
     word = Word.new(form)
-    word.save()
     word.add_to_counter()
     return word
 
 
 def word_by_pos_constructor(word, wbp):
     word_by_pos_repr = '<{}>.{}.{}.{}'
-    pos = pos_dict[wbp['partOfSpeech']]
+    pos = wbp['partOfSpeech']
+    if pos != '':
+        pos = pos_dict[pos]
     repr = word_by_pos_repr.format(
-        word.lemma, word.lang, word.etym_id, pos
+        word.lemma, word.lang, word.etym_no, pos
     )
     rel = {}
     for r in wbp['relatedWords']:
@@ -52,20 +53,19 @@ def word_by_pos_constructor(word, wbp):
     form = dict(
         lemma=word.lemma,
         lang=word.lang,
-        etym_id=word.etym_id,
+        etym_no=word.etym_no,
         pos=pos,
         repr=repr,
         text=wbp['text'][0],
         rel=rel,
     )
     word_by_pos = Word_by_PoS.new(form)
-    word_by_pos.save()
     return word_by_pos
 
 
 def word_into_model(word_name, language, word_data):
     sema_repr = '<{}>.{}.{}.{}.{}'
-    lang = code_lang_normalizer(language)
+    lang = name2code(language)
     count = 0
     for w in word_data:
         count += 1
@@ -74,22 +74,27 @@ def word_into_model(word_name, language, word_data):
             word_by_pos = word_by_pos_constructor(word, wbp)
             for i in wbp['text'][1]:
                 repr = sema_repr.format(
-                    word.lemma, word.lang, word.etym_id, word_by_pos.pos, i
+                    word.lemma, word.lang, word.etym_no, word_by_pos.pos, i
                 )
                 content = wbp['text'][1][int(i)]
                 examples = wbp['examples'][int(i)]
                 form = dict(
                     lemma=word.lemma,
                     lang=word.lang,
-                    etym_id=word.etym_id,
+                    etym_no=word.etym_no,
                     pos=word_by_pos.pos,
-                    sema_id=int(i),
+                    sema_no=int(i),
                     repr=repr,
                     content=content,
                     examples=examples,
                 )
                 sema = Sema.new(form)
                 sema.save()
+                word_by_pos.sema_list.append(sema.id)
+                word.sema_list.append(sema.id)
+            word_by_pos.save()
+            word.word_by_pos_list.append(word_by_pos.id)
+        word.save()
 
 
 def run(word_name, language):
@@ -97,20 +102,19 @@ def run(word_name, language):
     word_into_model(word_name, language, data)
 
 
-def new_headword_run(word, possible_language_list):    
+def initialize_new_headword(word, possible_language_list):    
+    headword = Headword.find_or_new(lemma=word)
+    any_of_the_six = []
     for lang in possible_language_list:
-        lang = code_lang_normalizer(lang)
-        print('****123**', lang)
-
+        headword.add_possible_lang(lang)
         if lang in the_six_lang_codes:
-            data = get_page(word, to_canonical_names(lang))
-            word_into_model(word, code_lang_normalizer(lang), data)
-            print('******', lang)
-            return lang
-        else:
-            headword = Headword.find_or_new(lemma=word)
-            headword.add_possible_lang(lang)
-    return None
+            data = get_page(word, code2name(lang))
+            word_into_model(word, name2code(lang), data)
+            any_of_the_six.append(lang)
+    if any_of_the_six != []:
+        return any_of_the_six[0]
+    else:
+        return None
 
 
 def test(word_name, language):

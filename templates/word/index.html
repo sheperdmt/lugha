@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ word }} 在 Wiktionary 中的释义</title>
+    <title>{{ lemma }} 在 Wiktionary 中的释义</title>
     <style>
         .button {
             position: fixed;
@@ -18,7 +18,7 @@
         }
         .sema{
             margin: 5px;
-            padding: 5px;
+            padding: 10px;
             border: 2px solid white;
             background-color: #eeeee4;
         }
@@ -35,72 +35,126 @@
             display: flex;
         }
         .lang-list * {
-            margin: 5px;
+            margin: 3px;
+        }
+        .sema-content {
+            display: flex;
+        }
+        .sema-users {
+            height: 36px;
+            margin: 3px;
+            padding: 5px;
+            background-color: rgb(236, 247, 247);
+            width: 222px;
+            flex-grow: 0;
+        }
+        .sema-detail {
+            flex-grow: 1;
         }
     </style>
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
 </head>
 <body>
-    <h3>查看 <i>{{ word }}</i> 在其他语言中的释义</h3>
+
+<!--  其他语言 -->
+{% if other_possible_langs != [] %}
+<div class="other-languages">
+    <h3>查看 <i>{{ lemma }}</i> 在其他语言中的释义</h3>
     <div class="lang-list">
-        {% for l in languages %}
-        <a href="{{ url_for(
-                'word.index', word='{}.{}'.format(entries[0].lemma, code_lang_normalizer(l))
-                ) }}" class="language">
-            {{ to_canonical_names(l) }}
+        {% for i in other_possible_langs %}
+        <a href="{{ url_for('word.index', word_repr=i[2]) }}" class="language">
+            {{ i[1] }}
         </a><br>
         {% endfor %}
     </div>
-    <h1>
-        Definition of <b class="language">{{ to_canonical_names(lang) }}</b>
-        word <i class="word-name">{{ word }}</i> in Wiktionary
-    </h1>
-    <div class="button">
-        <div class="add-button" hidden>
-            <button>添加到生词本</button>
-        </div>
-        <div class="remov-button" hidden>
-            <button>从生词本中删除</button>
-        </div>
+</div>
+{% endif %}
+
+<!-- 标题 -->
+<h1>
+    Definition of <b class="language">{{ lang }}</b>
+    word <i class="word-name">{{ lemma }}</i> in Wiktionary
+</h1>
+
+<!-- 按钮 -->
+<div class="button">
+    <div class="add-button" hidden>
+        <button>添加到生词本</button>
     </div>
-    {% for entry in entries %}
-        <div id="{{ entry.repr }}">
-        <h2 class="homograph">{{ entry.lemma }}</h2>
-        {% if entry.etym != '' %}
-        <h3>Etymology</h3>
-        <p class="etymology">{{ entry.etym }}</p>
-        {% endif %}
-        {% if entry.prnn != '' %}
-        <h3>Pronunciation</h3>
-        <ul class="pronunciation">
-            {% for i in entry.prnn.split('\n') %}
-                <li>
-                    {{ i }}
-                </li>
+    <div class="remov-button" hidden>
+        <button>从生词本中删除</button>
+    </div>
+</div>
+
+<!-- 主要部分 -->
+{% for i in data %}
+<div id="{{ i[0] }}">
+    <h2 class="lemma">{{ word }}</h2>
+
+    <!-- 词源 -->
+    {% if i.etym != '' %}
+    <div class="etymology">
+        <h3>词源</h3>
+        <p class="etymology-content">{{ i.etym }}</p>
+    </div>
+    {% endif %}
+
+    <!-- 发音 -->
+    {% if i.prnn != '' %}
+    <div class="pronunciation">
+        <h3>发音</h3>
+        <ul class="pronunciation-list">
+            {% for line in i.prnn.split('\n') %}
+            <li>
+                {{ line }}
+            </li>
             {% endfor %}
         </ul>
-        {% endif %}
-        {% for word_by_pos in Word_by_PoS.find_by_repr(entry.repr) %}
-            <h3 class="{{ word_by_pos.pos }}">{{ pos_dict[word_by_pos.pos] }}</h3>
-            <p>{{ word_by_pos.text }}</p>
-            <ol class="definitions">
-            {% for sema in Sema.find_by_repr(word_by_pos.repr) %}
-                <li data-sema-id={{ sema.id }} class="sema" 
-                id="{{ 'etym' + sema.repr.split('>.')[1].split('.', 1)[1].replace('.', '') }}"
-                >
-                    <span>{{ sema.content }}</span>
-                    <ul class="examples">
-                        {% for example in sema.examples %}
-                            <li>{{ example }}</li>
+    </div>
+    {% endif %}
+
+    <!-- 根据词性划分的词条 -->
+    {% for j in i.wbps %}
+    <div class="word_by_pos">
+        <h3 class="{{ j.pos }}">{{ j.pos }}</h3>
+        <p>{{ j.text }}</p>
+
+        <!-- 义项 -->
+        <ol class="definitions">
+            {% for sema in j.semas %}
+            <li class="sema" data-sema-id={{ sema.id }} id={{ 'etym-{}-{}-{}'.format(sema.etym_no, sema.pos, sema.sema_no) }}>
+                <span class="sema-content">
+                    <div class="sema-detail">{{ sema.content }}</div>
+
+                    <!-- 收藏了这个义项的用户列表 -->
+                    {% if sema.users != [] %}
+                    <div class="sema-users">
+                        {% for u in sema.users[:5] %}
+                        <a href="{{ url_for('user.index', u=u) }}">
+                            <img src="https://i.pravatar.cc/30?img={{ u }}" alt="user avatar">
+                        </a>
                         {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-            </ol>
+                    </div>
+                    {% endif %}
+
+                </span>
+
+                <!-- 例句 -->
+                {% if sema.examples != [] %}
+                <ul class="examples">
+                    {% for example in sema.examples %}
+                        <li>{{ example }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+            </li>
         {% endfor %}
-        </div>
-        <hr>
+        </ol>
+    </div>
     {% endfor %}
+</div>
+<hr>
+{% endfor %}
     <script src="/static/js/utils.js"></script>
     <script src="/static/js/ajax.js"></script>
     <script src="/static/js/word.js"></script>
