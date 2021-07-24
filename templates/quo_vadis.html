@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block custom_head %}
+<title>{{ lemma }} 在 Wiktionary 中的释义</title>
+{% endblock %}
+
+
+{% block content %}
+<main class="container">
+<h1>你要查询 <i>{{ word }}</i> 在哪个语言中的释义？</h1>
+<div class="lang-list d-inline-flex p-2 bd-highlight">
+    {% for _, lang, word_repr in data %}
+    <a href="{{ url_for('word.index', word_repr=word_repr) }}" class="language btn btn-primary" style="margin-right: 3px;">
+        {{ lang }}
+    </a><br>
+    {% endfor %}
+</div>
+</main>
+{% endblock %}
+
+
+
+{% block custom_script %}
+
+{% endblock %}

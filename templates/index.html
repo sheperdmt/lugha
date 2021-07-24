@@ -1,35 +1,81 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>首页</title>
-    </head>
-    <body>
-        {% for message in get_flashed_messages() %}
-        <div class="alert">{{ message }}</div>
-        {% endfor %}
-        {% if logged %}
-        <form action={{ url_for('word.search') }} method="GET">
-            <input name="word" placeholder="请输入要搜索的单词">
-            <br>
-            <button type="submit">搜索</button>
-        </form>
-        <a href="/logout">退出登录</a>
-        {% else %}
-        <form action="/register" method="POST">
-            <input name="username" placeholder="用户名">
-            <br>
-            <input name="password" placeholder="密码">
-            <br>
-            <button type="submit">注册</button>
-        </form>
-        <form action="/login" method='post'>
-            <input name="username" placeholder="用户名">
-            <br>
-            <input name="password" placeholder="密码">
-            <br>
-            <button type="submit">登录</button>
-        </form>
-        {% endif %}
-    </body>
-</html>
+{% extends 'base.html' %}
+
+{% block custom_head %}
+<title>Lugha.com</title>
+<link href={{ url_for('static', filename='index.css') }} rel="stylesheet">
+{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-info text-center">{{ message }}</div>
+{% endfor %}
+
+{% if user %}
+<div class="main">
+  <main class="text-center form-signin">
+    <form action={{ url_for('word.search') }} method="GET">
+      <img class="mb-4" src={{ url_for('static', filename='android-chrome-512x512.png' )}} alt="" width="57"
+        height="57">
+      <h1 class="h3 mb-3 fw-normal">你好，{{ user.username }}</h1>
+      <div class="form-floating">
+        <input name="word" type="search" class="form-control">
+        <label for="floatingInput">请输入要搜索的单词</label>
+      </div>
+      <button class="w-100 btn btn-lg btn-primary" type="submit">查询</button>
+    </form>
+    <a href="{{ url_for('index.logout') }}" class="w-100 btn btn-lg btn-warning" type="submit">退出登录</a>
+    <p class="mt-5 mb-3 text-muted">Lugha.com © 2021</p>
+  </main>
+</div>
+{% else %}
+<div class="main">
+  <main class="text-center form-signin">
+    <form method="POST">
+      <img class="mb-4" src={{ url_for('static', filename='android-chrome-512x512.png' )}} alt="" width="57"
+        height="57">
+      <h1 class="h3 mb-3 fw-normal">登录或注册</h1>
+
+      <!--
+      <div class="form-floating">
+        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+        <label for="floatingInput">Email address</label>
+      </div>
+      -->
+
+      <div class="form-floating">
+        <input name="username" type="text" class="form-control">
+        <label for="floatingInput">用户名</label>
+      </div>
+      <div class="form-floating">
+        <input name="password" type="password" class="form-control">
+        <label for="floatingPassword">密码</label>
+      </div>
+
+      <button onclick="login()" class="w-100 btn btn-lg btn-primary" type="submit">登录</button>
+      <button onclick="register()" class="w-100 btn btn-lg btn-warning" type="submit">注册</button>
+    </form>
+    <p class="mt-5 mb-3 text-muted">Lugha.com © 2021</p>
+  </main>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% if user %}
+{% block custom_script %}
+<script>
+  function login() {
+    document.forms[0].action = "{{ url_for('index.login') }}";
+    document.forms[0].submit();
+  }
+  function register() {
+    document.forms[0].action = "{{ url_for('index.register') }}";
+    document.forms[0].submit();
+  }
+</script>
+{% endblock %}
+{% endif %}

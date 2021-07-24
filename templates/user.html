@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block custom_head %}
+<title>{{ username }} 的主页</title>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h1>{{ username }}的主页</h1>
+    <div>
+        <h2>我收藏的单词</h2>
+        <button class="btn btn-primary">批量处理</button>
+        <table class="table table-bordered table-hover">
+
+            <thead>
+                <th>单词</th>
+                <th>语言</th>
+                <th>词性</th>
+                <th>释义</th>
+                <th>单词本</th>
+                <th></th>
+            </thead>
+            <tbody>
+            </tbody>
+
+        </table>
+
+        <nav>
+            <ul class="nav navbar navbar-left d-flex d-inline-flex ">
+                <li class="nav-item d-inline-flex  align-items-center mr-2"><a class="nav-link d-inline-flex"
+                        href="#"><i class="fa fa-user-o mr-2" aria-hidden="true"></i>前一页</a></li>
+                <li class="nav-item d-inline-flex  align-items-center mr-2"><a class="nav-link d-inline-flex"
+                        href="#"><i class="fa fa-pencil-square-o mr-2" aria-hidden="true"></i>后一页</a></li>
+            </ul>
+        </nav>
+
+        <h2>其他单词本</h2>
+        {% for m in memopads %}
+        {{ m }}
+        {% endfor %}
+    </div>
+    <div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block custom_script %}
+{% if user %}
+<script src="/static/utils.js"></script>
+<script src="/static/ajax.js"></script>
+<script src="/static/user.js"></script>
+{% endif %}
+{% endblock %}

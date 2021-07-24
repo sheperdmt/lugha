@@ -1,5 +1,4 @@
 let buttonToggle = function(node) {
-
     addOrRemove = 'add'
     if (node.classList.contains('saved')) {
         addOrRemove = 'remov'
@@ -22,15 +21,6 @@ let buttonToggle = function(node) {
     }
 }
 
-// let semaSelectToggle = function(addOrRemove) {
-//     let semaClass = `.to-be-${addOrRemove}ed`
-//     let selectedSemas = eA(semaClass)
-//     if (selectedSemas.length > 0) {
-//         button.hidden = false
-//     } else {
-//         button.hidden = true
-//     }
-// }
 
 let bindSemaEntries = function() {
     let semasList = eA('.sema')
@@ -66,7 +56,11 @@ let bindFloatButton = function(addOrRemove) {
 
 let loadAndMarkSavedMemos = function() {
     let semas = eA('.sema')
-    ajax('GET', '/api/memo/load', '', function(r){
+    let sema_id_list = []
+    for (sema of semas) {
+        sema_id_list.push(sema.dataset.semaId)
+    }
+    ajax('POST', '/api/memo/load_saved_ones', sema_id_list, function(r){
         let memos = JSON.parse(r)
         for (let sema of semas) {
             semaId = sema.dataset.semaId

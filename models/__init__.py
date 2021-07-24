@@ -28,8 +28,8 @@ class Model(object):
         self.id = -1
         self.type = ''
         self.deleted = False
-        self.created_time = 0
-        self.updated_time = 0
+        self.ct = 0
+        self.ut = 0
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -69,8 +69,8 @@ class Model(object):
                 setattr(m, k, t(v))
 
         ts = int(time.time())
-        m.created_time = ts
-        m.updated_time = ts
+        m.ct = ts
+        m.ut = ts
         m.type = cls.__name__.lower()
         return m
 
@@ -119,3 +119,7 @@ class Model(object):
             'deleted': True
         }
         client.db[name].update_one(query, values)
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.find_one(id=int(id))

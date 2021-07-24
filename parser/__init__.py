@@ -103,13 +103,13 @@ def run(word_name, language):
 
 
 def initialize_new_headword(word, possible_language_list):    
-    headword = Headword.find_or_new(lemma=word)
     any_of_the_six = []
     for lang in possible_language_list:
+        headword = Headword.find_or_new(lemma=word)
         headword.add_possible_lang(lang)
         if lang in the_six_lang_codes:
             data = get_page(word, code2name(lang))
-            word_into_model(word, name2code(lang), data)
+            word_into_model(word, lang, data)
             any_of_the_six.append(lang)
     if any_of_the_six != []:
         return any_of_the_six[0]
@@ -119,8 +119,6 @@ def initialize_new_headword(word, possible_language_list):
 
 def test(word_name, language):
     data = get_page(word_name, language)
-    print('data, ', data)
-    print('type of data, ', type(data))
     word_into_model(word_name, language, data)
     with open(f'./temp/{word_name}-{language}.txt', 'w', encoding='utf-8') as f:
         d = json.dumps(data, indent=4)

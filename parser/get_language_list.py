@@ -20,7 +20,7 @@ def get_possible_language_list(word):
     langs = soup.find_all('li', class_='toclevel-1')
     for l in langs:
         lang = l.a['href'].strip('#').replace('_', ' ')
-        print('*-*-*-*', lang)
+        # print('*-*-*-*', lang)
         lang_list.append(name2code(lang))
     return lang_list
 

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block custom_head %}
+<title>{{ lemma }} 在 Wiktionary 中的释义</title>
+<link href={{ url_for('static', filename='word.css' ) }} rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="container">
+    <!-- 按钮 -->
+    <div class="button fixed-bottom">
+        <div class="add-button" hidden>
+            <button class="btn btn-primary">添加到生词本</button>
+        </div>
+        <div class="remov-button" hidden>
+            <button class="btn btn-danger">从生词本中删除</button>
+        </div>
+    </div>
+
+    <!--  其他语言 -->
+    {% if other_possible_langs != [] %}
+    <div class="other-languages">
+        <h3>查看 <i>{{ lemma }}</i> 在其他语言中的释义</h3>
+        <div class="lang-list d-inline-flex p-2 bd-highlight">
+            {% for i in other_possible_langs %}
+            <a href="{{ url_for('word.index', word_repr=i[2]) }}" class="language btn btn-secondary">
+                {{ i[1] }}
+            </a><br>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+
+    <!-- 标题 -->
+    <h1>
+        Definition of <b class="language">{{ lang }}</b>
+        word <i class="word-name">{{ lemma }}</i> in Wiktionary
+    </h1>
+
+    <!-- 主要部分 -->
+    {% for i in data %}
+    <div id="{{ i[0] }}">
+        <h2 class="lemma">{{ word }}</h2>
+
+        <!-- 词源 -->
+        {% if i.etym != '' %}
+        <div class="etymology">
+            <h3>Etymology</h3>
+            <p class="etymology-content">{{ i.etym }}</p>
+        </div>
+        {% endif %}
+
+        <!-- 发音 -->
+        {% if i.prnn != '' %}
+        <div class="pronunciation">
+            <h3>Pronunciation</h3>
+            <ul class="pronunciation-list">
+                {% for line in i.prnn.split('\n') %}
+                <li>
+                    {{ line }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- 根据词性划分的词条 -->
+        {% for j in i.wbps %}
+        <div class="word_by_pos">
+            <h3 class="{{ j.pos }}">{{ j.pos }}</h3>
+            <p>{{ j.text }}</p>
+
+            <!-- 义项 -->
+            <ol class="definitions">
+                {% for sema in j.semas %}
+                <li class="sema" data-sema-id={{ sema.id }} id={{ 'etym-{}-{}-{}' .format(sema.etym_no, sema.pos,
+                    sema.sema_no) }}>
+                    <span class="sema-content">
+                        <div class="sema-detail">{{ sema.content }}</div>
+
+                        <!-- 收藏了这个义项的用户列表 -->
+                        {% if sema.users != [] %}
+                        <div class="sema-users">
+                            {% for u in sema.users[:5] %}
+                            <a href="{{ url_for('user.index', username=u) }}">
+                                <img class="user-avatar" src="https://i.pravatar.cc/30?img={{ u }}" alt="user avatar">
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                    </span>
+
+                    <!-- 例句 -->
+                    {% if sema.examples != [] %}
+                    <ul class="examples">
+                        {% for example in sema.examples %}
+                        <li>{{ example }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+        {% endfor %}
+    </div>
+    <hr>
+    {% endfor %}
+</main>
+{% endblock %}
+
+
+
+{% block custom_script %}
+{% if user %}
+<script src="/static/utils.js"></script>
+<script src="/static/ajax.js"></script>
+<script src="/static/word.js"></script>
+{% endif %}
+{% endblock %}

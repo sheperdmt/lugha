@@ -1,11 +1,10 @@
-from flask import session, flash
-from flask.helpers import url_for
+from flask import session, flash, url_for
 from werkzeug.utils import redirect
 from models.user import User
 
 def current_user():
     uid = session.get('user_id', -1)
-    u = User.find_one(id=uid)
+    u = User.find_by_id(uid)
     return u
 
 

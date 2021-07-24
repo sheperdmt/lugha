@@ -2,7 +2,6 @@ from flask import (
     render_template,
     request,
     redirect,
-    session,
     url_for,
     Blueprint,
     flash,
@@ -10,20 +9,17 @@ from flask import (
 
 from .utils import (
     login_required,
-    current_user,
 )
 
 from models.lexicon import (
     Headword,
     Word,
-    Word_by_PoS,
-    Sema,
 )
 
-from parser import get_page, word_into_model, initialize_new_headword
+from parser import initialize_new_headword
 from parser import run as word_parser
 from parser.get_language_list import get_possible_language_list
-from linguistics import code2name, name2code
+from linguistics import code2name
 
 main = Blueprint('word', __name__)
 
@@ -36,7 +32,7 @@ WRONG_INPUT = '输入有误'
 def search():
     word = request.args.get('word')
     if word is None:
-        flash('输入有误')
+        flash(WRONG_INPUT)
         return redirect(url_for('index.index'))
     
     if Headword.does_word_exist(word):      # 曾被查询过的情况
@@ -68,11 +64,14 @@ def search():
 def quo_vadis():
     word = request.args.get('word')
     data = Headword.all_possible_langs(word)
-    return render_template('word/quo_vadis.html', word=word, data=data)
+    return render_template('quo_vadis.html', word=word, data=data)
 
 
+@main.route('/')
 @main.route('/<word_repr>')
-def index(word_repr):
+def index(word_repr='modnar'):
+    if word_repr == 'modnar':
+        return 'random'
     w, l = word_repr.rsplit('.', 1)
     entries = Word.find(lemma=w, lang=l)
     if entries == []:    # 新词的情况
@@ -83,7 +82,7 @@ def index(word_repr):
     # 词条数据
     data = Word.data_for_word_page(w, l)
     return render_template(
-        'word/index.html',
+        'word.html',
         lemma=w,
         lang=code2name(l),
         data=data,

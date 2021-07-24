@@ -65,6 +65,11 @@ def code2name(string):
     else:
         return string
         
-abbr2pos = dict(zip(PARTS_OF_SPEECH_ABBR, PARTS_OF_SPEECH))
-pos2abbr = dict(zip(PARTS_OF_SPEECH, PARTS_OF_SPEECH_ABBR))
+def abbr2pos(abbr):
+    d = dict(zip(PARTS_OF_SPEECH_ABBR, PARTS_OF_SPEECH))
+    return d.get(abbr)
+
+def pos2abbr(pos):
+    d = dict(zip(PARTS_OF_SPEECH, PARTS_OF_SPEECH_ABBR))
+    return d.get(pos)
 

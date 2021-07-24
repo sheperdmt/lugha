@@ -1,0 +1,50 @@
+body {
+    background-color: #f5f5f5;
+}
+
+h1 {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.sema {
+    margin: 5px;
+    padding: 10px;
+    border: 2px solid white;
+    background-color: #eeeee4;
+}
+
+.saved {
+    background-color: #1e81b0;
+}
+
+.to-be-added {
+    border: 2px solid #873e23;
+}
+
+.to-be-removed {
+    border: 2px dotted black;
+}
+
+.lang-list * {
+    margin: 3px;
+}
+
+.sema-content {
+    display: flex;
+}
+
+.sema-users {
+    height: 36px;
+    margin: 3px;
+    padding: 5px;
+    flex-grow: 0;
+}
+
+.user-avatar {
+    border-radius: 5px;
+}
+
+.sema-detail {
+    flex-grow: 1;
+}

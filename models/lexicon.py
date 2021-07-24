@@ -3,6 +3,7 @@ from linguistics import name2code, code2name, abbr2pos
 from supermemo2 import SMTwo
 import time
 import datetime
+from models.memo import Memopad
 
 class Headword(Model):
     '''
@@ -57,10 +58,13 @@ class Headword(Model):
         langs = [code2name(c) for c in lang_codes]
         word_reprs = [f'{lemma}.{c}' for c in lang_codes]
         result = []
-        print(langs)
         for i in range(len(lang_codes)):
             result.append((lang_codes[i], langs[i], word_reprs[i]))
         return result
+
+    def lang_counter_plus_one(self, lang):
+        self.langs[lang] += 1
+        self.save()
 
 
 class Lexis(Model):
@@ -110,11 +114,11 @@ class Word(Lexis):
         h = Headword.find_or_new(lemma=self.lemma)
         if h.langs.get(self.lang) is None:
             h.langs[self.lang] = 0
-        h.langs[self.lang] += 1
+        h.lang_counter_plus_one(self.lang)
         h.save()
 
     def get_semas(self):
-        return [Sema.find_one(id=int(sema_id)) for sema_id in self.sema_list]
+        return [Sema.find_by_id(sema_id) for sema_id in self.sema_list]
 
     @classmethod
     def get_all_semas(cls, lemma):
@@ -127,11 +131,11 @@ class Word(Lexis):
     def get_wbps(self):
         data = []
         for p in self.word_by_pos_list:
-            wbp = Word_by_PoS.find_one(id=p)
+            wbp = Word_by_PoS.find_by_id(p)
             semas = wbp.get_semas()
             data.append(dict(
                 text=wbp.text,
-                pos=wbp.pos,
+                pos=abbr2pos(wbp.pos),
                 semas=semas,
                 ))
         return data
@@ -150,7 +154,6 @@ class Word(Lexis):
         return data
 
 
-
 class Word_by_PoS(Lexis):
     '''
     根据词性划分的词条
@@ -165,7 +168,7 @@ class Word_by_PoS(Lexis):
     def get_semas(self):
         data = []
         for s in self.sema_list:
-            sema = Sema.find_one(id=s)
+            sema = Sema.find_by_id(s)
             data.append(sema)
         return data
 
@@ -196,14 +199,52 @@ class Sema(Lexis):
     @classmethod
     def batch_add_sema_user(cls, sema_id_list, user_id):
         for s in sema_id_list:
-            sema = Sema.find_one(id=int(s))
+            sema = Sema.find_by_id(s)
             sema.add_sema_user(user_id)
 
     @classmethod
     def batch_delete_sema_user(cls, sema_id_list, user_id):
         for s in sema_id_list:
-            sema = Sema.find_one(id=int(s))
+            sema = Sema.find_by_id(s)
             sema.delete_sema_user(user_id)
+
+    def profile(self):
+        wbp = self.find_wbp()
+        word = self.find_word()
+        prfl = dict(
+            prnn=word.prnn,
+            etym=word.etym,
+            text=wbp.text,
+        )
+        return prfl
+
+    def info(self):
+        data = dict(
+            lemma=self.lemma,
+            lang=self.lang,
+            etym_no=self.etym_no,
+            pos=self.pos,
+            sema_no=self.sema_no,
+            sema_id=self.id,
+            repr=self.repr
+        )
+        return data
+
+    def find_wbp(self):
+        dict_keys = ['lemma', 'lang', 'etym_no', 'pos']
+        d = {}
+        for k in dict_keys:
+            d[k] = self.__dict__[k]
+        wbp = Word_by_PoS.find_one(**d)
+        return wbp
+
+    def find_word(self):
+        dict_keys = ['lemma', 'lang', 'etym_no']
+        d = {}
+        for k in dict_keys:
+            d[k] = self.__dict__[k]
+        word = Word.find_one(**d)
+        return word
 
 
 class Card(Lexis):
@@ -211,15 +252,27 @@ class Card(Lexis):
     卡片就是带上用户自定义信息的 sema
     '''
     def __init__(self):
-        self.memos_list = [] # 一张卡片可以属于多个单词本
+        super().__init__()
+        self.memos_list = [] # 一张卡片可以属于多个单词本，记录单词本的memo_no
         self.user_id = -1 # 但是只能属于一个用户
+        self.sema_id = -1 # 每张卡对应一个 sema
+
         self.pos = ''
         self.sema_no = -1
+
         self.easiness = 0.0 # 下面这四个用于背单词
         self.interval = -1
         self.repetitions = -1
-        self.review_time = self.created_time
+        self.review_time = self.ct
+
         self.note = '' # 给单词写笔记
+
+    def get_memos_list(self):
+        data = []
+        for m in self.memos_list:
+            memopad = Memopad.find_by_id(m)
+            data.append(memopad.get_info())
+        return data
 
     def load_review_date(self):
         d = datetime.date.fromtimestamp(self.review_time)
@@ -247,7 +300,7 @@ class Card(Lexis):
 
     @classmethod
     def remove_user_card(cls, sema_id, user_id):
-        sema = Sema.find_one(id=int(sema_id))
+        sema = Sema.find_by_id(sema_id)
         cards = cls.find_by_repr(sema.repr)
         if len(cards) > 0:
             [card] = [c for c in cards if c.user_id == user_id]
@@ -258,9 +311,21 @@ class Card(Lexis):
         for sema_id in sema_id_list:
             cls.remove_user_card(sema_id, user_id)
 
+    @classmethod
+    def new_card(cls, sema_id, user_id):
+        sema = Sema.find_by_id(sema_id)
+        info = sema.info()
+        card = cls.new(**info)
+        card.user_id = user_id
+        card.save()
+        return card
 
-class Memo(Model):
-    def __init__(self):
-        self.user_id = -1
-        self.content = []
-        self.description = ''
+    def add_to_memos_list(self, memo_id):
+        if memo_id not in self.memos_list:
+            self.memos_list.append(memo_id)
+        self.save()
+
+    def delete_from_memos_list(self, memo_id):
+        if memo_id in self.memos_list:
+            self.memos_list.remove(memo_id)
+        self.save()
