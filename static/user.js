@@ -251,7 +251,6 @@ const loadSemas = function () {
 
 let _main = function () {
     loadSemas()
-    // toggleCollapse()
 }
 
 _main()
