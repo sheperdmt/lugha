@@ -6,6 +6,7 @@ from flask import (
 import json
 from routes import current_user
 from models.lexicon import Card, Sema, Word_by_PoS
+import time
 
 
 main = Blueprint('api', __name__)
@@ -115,8 +116,6 @@ def add_to_memopad():
     sema_id = request.args.get('id')
     memo_id_dict = json.loads(request.data)
     card = Card.find_one(sema_id=int(sema_id), user_id=u.id)
-    print('memo_id_dict',memo_id_dict)
-    print('card before', card)
     for k, v in memo_id_dict.items():
         memopad = Memopad.find_by_id(id=int(k))
         if v > 0:
@@ -128,7 +127,6 @@ def add_to_memopad():
                 memopad.content.remove(sema_id)
             card.delete_from_memos_list(int(k))
         memopad.save()
-    print('card after', card)
     card.save()
     return 'success!'
 
@@ -142,3 +140,38 @@ def new_memopad():
     memopad = Memopad.new(user_id=u.id, name=name, description=desc, memo_no=memo_no)
     memopad.save()
     return 'success!'
+
+@main.route('/memo/cards_to_review')
+def cards_to_review():
+    memopad_id = request.args.get('id')
+    u = current_user()
+    current_time = int(time.time())
+    card_data = Card.find_less_than('review_time', current_time, user_id=u.id)
+    valid_cards = []
+    for c in card_data:
+        if int(memopad_id) in c.memos_list:
+            valid_cards.append(c)
+    if len(valid_cards) == 0: # 卡片复习完毕的情况
+        return 'review done!'
+    card = valid_cards[0]
+    sema = Sema.find_by_id(card.sema_id)
+    data = dict(
+        id=card.id,
+        lemma=sema.lemma,
+        lang=sema.lang,
+        pos=sema.pos,
+        repr=sema.repr,
+        content=sema.content,
+        note=card.note,
+    )
+    data = json.dumps(data)
+    return data
+
+@main.route('/memo/review', methods=['POST'])
+def review():
+    data = json.loads(request.data)
+    card_id = data.get('card_id')
+    easiness = int(data.get('easiness'))
+    card = Card.find_by_id(card_id)
+    card.review(easiness)
+    return 'reviewed!'

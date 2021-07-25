@@ -123,3 +123,9 @@ class Model(object):
     @classmethod
     def find_by_id(cls, id):
         return cls.find_one(id=int(id))
+
+    @classmethod
+    def find_less_than(cls, field, value, **kwargs):
+        query = {field: {'$lt': value}}
+        query.update(kwargs)
+        return cls.find(**query)

@@ -27,6 +27,7 @@
       </div>
       <button class="w-100 btn btn-lg btn-primary" type="submit">查询</button>
     </form>
+    <a href={{ url_for('user.index', username=user.username) }} class="w-100 btn btn-lg btn-success" style="margin-bottom: 10px;">我的主页</a>
     <a href="{{ url_for('index.logout') }}" class="w-100 btn btn-lg btn-warning" type="submit">退出登录</a>
     <p class="mt-5 mb-3 text-muted">Lugha.com © 2021</p>
   </main>

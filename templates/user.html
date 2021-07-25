@@ -35,10 +35,12 @@
             </ul>
         </nav>
 
-        <h2>其他单词本</h2>
-        {% for m in memopads %}
-        {{ m }}
-        {% endfor %}
+        <h2>我的单词本</h2>
+        <div class="lang-list d-inline-flex p-2 bd-highlight">
+            {% for m in memopads %}
+            <a style="margin-right: 3px;" class="btn btn-secondary" href="/memopad/{{ m.id }}">{{ m.name }}</a>
+            {% endfor %}
+        </div>
     </div>
     <div>
     </div>
@@ -47,7 +49,7 @@
 
 
 {% block custom_script %}
-{% if user %}
+{% if user.username == username %}
 <script src="/static/utils.js"></script>
 <script src="/static/ajax.js"></script>
 <script src="/static/user.js"></script>

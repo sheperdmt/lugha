@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block custom_head %}
+<title>{{ title }} - {{ u.username }} 的单词本</title>
+{% endblock %}
+
+
+{% block content %}
+<div id="memopad-{{ memo_id }}" class="memopad-main container">
+    <h1>{{ title }} - {{ u.username }} 的单词本</h1>
+    <!-- <a class="btn btn-primary btn-lg">背单词！</a> -->
+
+    <div class="card-main bg-primary bg-gradient me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden"
+        style="padding: 3rem;">
+        <div class="my-3 py-3">
+            <h2 class="card-lemma display-5"></h2>
+            <p class="card-detail lead"></p>
+        </div>
+        <div class="show-answer-form">
+            <div class="lang-list d-inline-flex p-2 bd-highlight">
+                <btn class="btn-show-answer btn btn-dark">显示答案</btn>
+           </div>
+        </div>
+        <div class="card-back-side bg-light shadow-sm mx-auto" hidden style="width: 80%; border-radius: 21px;">
+            <div class="card-back lead" style="color: black; padding: 1rem; text-align: left; margin-bottom: 20px;"></div>
+        </div>
+        <div class="choice-form" hidden>
+            <h5>想起这张卡片的内容了吗？</h5>
+            <div class="lang-list bg-light border border-1 border-white rounded btn-group" role="group">
+                <btn id="btn-again" class="btn-easiness btn btn-outline-danger">想不起来</btn>
+                <btn id="btn-hard" class="btn-easiness btn btn-outline-warning">有点困难</btn>
+                <btn id="btn-good" class="btn-easiness btn btn-outline-primary">想起来了</btn>
+                <btn id="btn-easy" class="btn-easiness btn btn-outline-success">容易得很</btn>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+
+{% block custom_script %}
+{% if user.username==u.username %}
+<script src="/static/utils.js"></script>
+<script src="/static/ajax.js"></script>
+<script src="/static/memopad.js"></script>
+{% endif %}
+{% endblock %}

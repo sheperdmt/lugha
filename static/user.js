@@ -131,9 +131,9 @@ const semaTemplate = function (semaData) {
                 <td>${semaData.content}</td>
                 <td class="memopads"></td>
                 <td class="clpsed">
-                    <button onclick="cardDetailButtonOnClick(${semaData.id})">🔎</button>
-                    <button onclick="cardNoteButtonOnClick(${semaData.id})">📝</button>
-                    <button onclick="cardAdd2MemopadButtonOnClick(${semaData.id})">🗂️</button>
+                    <button class="btn" onclick="cardDetailButtonOnClick(${semaData.id})">🔎</button>
+                    <button class="btn" onclick="cardNoteButtonOnClick(${semaData.id})">📝</button>
+                    <button class="btn" onclick="cardAdd2MemopadButtonOnClick(${semaData.id})">🗂️</button>
                 </td>
             </tr>
             `
@@ -144,7 +144,7 @@ const semaTemplate = function (semaData) {
 
 // 单词本链接按钮的模板
 const memopadTemplate = function (data) {
-    let t = `<a style="margin-right: 3px; font-size: 0.5em" class="btn btn-secondary btn-sm" href="/user/${data.id}">${data.name}</a>`
+    let t = `<a style="margin-right: 3px; font-size: 0.5em" class="btn btn-link btn-sm" href="/memopad/${data.id}">${data.name}</a>`
     return t
 }
 

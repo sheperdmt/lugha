@@ -295,7 +295,7 @@ class Card(Lexis):
         self.easiness = r.easiness
         self.interval = r.interval
         self.repetitions = r.repetitions
-        self.review_time = review_time
+        self.review_time = int(review_time)
         self.save()
 
     @classmethod
