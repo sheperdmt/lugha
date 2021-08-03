@@ -1,12 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
 from models.lexicon import Headword
-from linguistics import code2name, name2code
+from linguistics import name2code
 
-from parser.proxies import proxies
 from parser.parser_with_cache import cache_exists
 
 def get_possible_language_list(word):
+    if globals().get('__builtins__').get('__debug__'):
+        from parser.proxies import proxies
+    else:
+        proxies = {}
     html_doc = ''
     if cache_exists(word):
         with open(f'./cached/{word}.html', 'r') as f:
