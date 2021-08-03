@@ -5,10 +5,11 @@ import json
 
 parser = WiktionaryParser()
 
-from parser.proxies import proxies
-
 def get_page(word, language):
     language = code2name(language)
+    proxies = {}
+    if globals().get('__builtins__').get('__debug__'):
+        from parser.proxies import proxies
     data = parser.fetch(word, language=language, proxies=proxies)
     return data
 
