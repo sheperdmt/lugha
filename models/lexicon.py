@@ -288,8 +288,7 @@ class Card(Lexis):
         if self.repetitions < 1:
             r = SMTwo.first_review(recall_quality, today)
         else:
-            last_review_date = self.load_review_date()
-            r = SMTwo(self.easiness, self.interval, self.repetitions, last_review_date)
+            r = SMTwo(self.easiness, self.interval, self.repetitions)
             r.review(recall_quality, today)
         review_time = self.dump_review_date(r.review_date)
         self.easiness = r.easiness
