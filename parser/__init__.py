@@ -5,13 +5,11 @@ import json
 
 parser = WiktionaryParser()
 
+from parser.proxies import proxies
 
 def get_page(word, language):
     language = code2name(language)
-    data = parser.fetch(word, language=language, proxies={
-        'http': 'socks5://192.168.31.247:9909',
-        'https': 'socks5://192.168.31.247:9909',
-    })
+    data = parser.fetch(word, language=language, proxies=proxies)
     return data
 
 

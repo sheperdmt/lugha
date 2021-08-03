@@ -1,6 +1,3 @@
-# use this when proxy not needed
-# from .wiktionaryparser import WiktionaryParser
-# else:
 from .wiktionaryparser import WiktionaryParser
 from bs4 import BeautifulSoup
 

@@ -1,3 +1,5 @@
+# this is deprecated
+
 from .wiktionaryparser import WiktionaryParser
 from bs4 import BeautifulSoup
 
