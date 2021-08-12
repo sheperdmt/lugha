@@ -1,0 +1,246 @@
+<style>
+    .rime-table {
+        border: 1px solid #CCC;
+    }
+
+    .rime-table td {
+        background-color: whitesmoke;
+        padding: 4px;
+        margin: 3px;
+        border: 1px solid #CCC;
+    }
+
+    .rime-table th {
+        background-color: #104E8B;
+        color: #FFF;
+        font-weight: bold;
+    }
+
+    td.hovered {
+        background-color: gold;
+    }
+    .hover-box {
+        background-color: #104E8B;
+        border-radius: 30%;
+        color: honeydew;
+        font-size: 0.8em;
+        position: fixed;
+    }
+</style>
+<table class="rime-table">
+    <thead>
+        <tr class="table-head">
+            <th>音位</th>
+            <th colspan="4">a</th>
+            <th colspan="3">e</th>
+            <th>i</th>
+            <th colspan="2">ə</th>
+            <th colspan="4">o</th>
+            <th colspan="2">u</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>等与介音</td>
+            <td>一</td>
+            <td>三i</td>
+            <td>二ɰ</td>
+            <td>三i</td>
+            <td>二ɰ</td>
+            <td>三i, ɻi</td>
+            <td>四</td>
+            <td>三i, ɻi</td>
+            <td>一</td>
+            <td>三ɨ</td>
+            <td>二ɰ</td>
+            <td>三i</td>
+            <td>一</td>
+            <td>三i</td>
+            <td>一</td>
+            <td>三i</td>
+        </tr>
+        <tr>
+            <td>元音</td>
+            <td>ɑ</td>
+            <td>a</td>
+            <td colspan="2">æ</td>
+            <td>ɛ</td>
+            <td>ᴇ</td>
+            <td>e</td>
+            <td>i</td>
+            <td>ə</td>
+            <td>ɨ</td>
+            <td>ɔ</td>
+            <td>ɤ</td>
+            <td>o</td>
+            <td>o̞</td>
+            <td colspan="2">u</td>
+        </tr>
+        <tr>
+            <td>∅</td>
+            <td class="kuax">歌</td>
+            <td>&nbsp;</td>
+            <td class="krax">麻二</td>
+            <td class="krax">麻三</td>
+            <td class="ghrex">佳</td>
+            <td class="cjix">支</td>
+            <td>&nbsp;</td>
+            <td class="cjix">脂</td>
+            <td>&nbsp;</td>
+            <td class="cjix">之</td>
+            <td>&nbsp;</td>
+            <td class="ngyoh">鱼</td>
+            <td class="ngyoh">模</td>
+            <td class="ngyoh">虞</td>
+            <td class="liu">侯</td>
+            <td class="liu">尤</td>
+        </tr>
+        <tr>
+            <td>ŋ </td>
+            <td class="dangh">唐</td>
+            <td class="dangh">阳</td>
+            <td class="krangx">庚二</td>
+            <td class="krangx">庚三</td>
+            <td class="krangx">耕</td>
+            <td class="krangx">清</td>
+            <td class="krangx">青</td>
+            <td>&nbsp;</td>
+            <td class="cong">登</td>
+            <td class="cong">蒸</td>
+            <td class="krung">江</td>
+            <td>&nbsp;</td>
+            <td class="thung">冬</td>
+            <td class="thung">钟</td>
+            <td class="thung">东一</td>
+            <td class="thung">东三</td>
+        </tr>
+        <tr>
+            <td>m</td>
+            <td class="ghrem">谈</td>
+            <td class="ghrem">严 (凡)</td>
+            <td class="ghrem">衔</td>
+            <td>&nbsp;</td>
+            <td class="ghrem">咸</td>
+            <td class="ghrem">盐</td>
+            <td class="ghrem">添</td>
+            <td class="sjim">侵</td>
+            <td class="ghrem">覃</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>n</td>
+            <td class="sren">寒</td>
+            <td>&nbsp;</td>
+            <td class="sren">删</td>
+            <td>&nbsp;</td>
+            <td class="sren">山</td>
+            <td class="sren">仙</td>
+            <td class="sren">先</td>
+            <td class="crin">真 (臻)</td>
+            <td class="crin">痕</td>
+            <td class="crin">欣</td>
+            <td>&nbsp;</td>
+            <td class="sren">元</td>
+            <td class="crin">魂</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td class="crin">文</td>
+        </tr>
+        <tr>
+            <td>i</td>
+            <td class="ghrex">泰</td>
+            <td class="ghrex">废</td>
+            <td class="ghrex">夬</td>
+            <td>&nbsp;</td>
+            <td class="ghrex">皆</td>
+            <td class="ghrex">祭</td>
+            <td class="ghrex">齐</td>
+            <td>&nbsp;</td>
+            <td class="ghrex">咍</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td class="cjix">微</td>
+            <td class="ghrex">灰</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>u</td>
+            <td class="ghrauh">豪</td>
+            <td>&nbsp;</td>
+            <td class="ghrauh">肴</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td class="ghrauh">宵</td>
+            <td class="ghrauh">萧</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td class="liu">幽</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<div class="hover-box" hidden></div>
+<script>
+    var yonhSjepHanhZih = [
+        '通', '江', '止', '遇',
+        '蟹', '臻', '山', '效',
+        '果', '假', '宕', '梗',
+        '曾', '流', '深', '咸',
+    ]
+
+    var yonhSjepList = [
+        'thung', 'krung', 'cjix', 'ngyoh',
+        'ghrex', 'crin', 'sren', 'ghrauh',
+        'kuax', 'krax', 'dangh', 'krangx',
+        'cong', 'liu', 'sjim', 'ghrem',
+    ]
+
+    var yonhSjepDict = {}
+
+    for (var i = 0; i < yonhSjepList.length; i++) {
+        yonhSjepDict[yonhSjepList[i]] = yonhSjepHanhZih[i]
+    }
+
+    var rimeTable = document.querySelector('.rime-table')
+    var hoverBox = document.querySelector('.hover-box')
+
+    rimeTable.addEventListener('mouseover', function (e) {
+        var self = e.target
+        var yonhSjep = self.classList[0]
+        var ofTheSameYonhSjep = rimeTable.querySelectorAll('.' + yonhSjep)
+        var allTds = rimeTable.querySelectorAll('td')
+        for (var td of allTds) {
+            td.classList.remove('hovered')
+        }
+        for (var td of ofTheSameYonhSjep) {
+            td.classList.add('hovered')
+        }
+        if (self.tagName == 'TD' & yonhSjep != undefined) {
+            hoverBox.hidden = false
+            hoverBox.innerHTML = yonhSjepDict[yonhSjep] + '摄'
+            hoverBox.style.left = self.offsetLeft + 'px'
+            hoverBox.style.top = self.offsetTop - 10 + 'px'
+        } else {
+            hoverBox.hidden = true
+        }
+    })
+    
+    var rubyTemplate = function () {
+        t = `
+            <div class="ruby-box"></div>
+        `
+    }
+</script>

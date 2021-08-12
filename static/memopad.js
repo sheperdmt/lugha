@@ -22,7 +22,6 @@ const bindChoiceButton = function () {
     choiceForm.addEventListener('click', function (event) {
         const clicked = event.target
         if (clicked.classList.contains('btn-easiness')) {
-            log('haha')
             const cardNode = e('.card-main')
             const card_id = cardNode.id
             const easiness = clicked.id.slice(4)
@@ -35,6 +34,12 @@ const bindChoiceButton = function () {
                 log(r)
                 loadCard()
             })
+            const showAnswerForm = e('.show-answer-form')
+            showAnswerForm.hidden = false
+            const cardBackSide = e('.card-back-side')
+            cardBackSide.hidden = true
+            const choiceForm = e('.choice-form')
+            choiceForm.hidden = true
         }
     })
 }
